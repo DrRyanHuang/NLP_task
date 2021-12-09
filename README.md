@@ -8,7 +8,7 @@
 
 |       | 当前任务      |
 |:-----:|:---------:|
-| Huang | n-gram    |
+| Huang | skip-gram |
 | lv    | cbow      |
 | xiao  | 线性 + LSTM |
 
