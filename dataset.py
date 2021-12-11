@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from util import tokenize
 from torch.utils.data import Dataset, DataLoader
 
 
@@ -42,8 +43,9 @@ class _IMDB(Dataset):
     def __getitem__(self, idx):
         path, label = self.data_list[idx]
         with open(path) as f:
-            text = f.read()
-        return text, label
+            raw_text = f.read()
+        word_list = tokenize(raw_text)
+        return raw_text, word_list, label
 
     def __len__(self):
         return len(self.data_list)
@@ -96,4 +98,4 @@ if __name__ == "__main__":
     dateset_train = IMDB(r"data/aclImdb", "train")
     dateset_test = IMDB(r"data/aclImdb", "test")
     
-    # print(dateset.data_list[1])
+    print(dateset_test[0])
