@@ -21,6 +21,8 @@ class WordDict:
         if load_old:
             self.id2word = read_pkl("model_save/wordDict_id2word.pkl")
             self.word2id = {v:k for k, v in self.id2word.items()}
+            
+            self.length = len(self.id2word)
             return
             
         
@@ -41,6 +43,8 @@ class WordDict:
         self.word2id = {v:k for k, v in self.id2word.items()}
         
         write_pkl("wordDict_id2word.pkl", self.id2word)
+        
+        self.length = len(self.id2word)
 
 
 
@@ -74,9 +78,8 @@ class WordDict:
         return self.seqence2vector(seq_list, max_len)
 
 
-
-
-
+    def __len__(self):
+        return self.length
 
 
 

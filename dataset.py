@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from util import tokenize
+import torch
 from torch.utils.data import Dataset, DataLoader
 
 
@@ -55,7 +56,7 @@ class _IMDB(Dataset):
 
 class IMDB(Dataset):
     
-    def __init__(self, root, mode="train", p=0.2):
+    def __init__(self, root, mode="train", p=0.2, transform=None):
         
         assert 0<p<1
         
@@ -63,6 +64,8 @@ class IMDB(Dataset):
         dataset_train = _IMDB(root, "train")
         dataset_test = _IMDB(root, "test")
         self.dataset = dataset_test + dataset_train
+        
+        self.transform = transform
         
         length = len(self.dataset)
         
@@ -85,12 +88,45 @@ class IMDB(Dataset):
             if idx < 0:
                 raise IndexError("------- 索引越界, 负数的绝对值太大" + \
                                  "检查IMDB数据类的使用情况 -------")
-        return self.dataset[self.start + idx]
+        raw_out = list(self.dataset[self.start + idx])
+        if self.transform is not None:
+            raw_out[1] = self.transform(raw_out[1])
+        
+        return raw_out
     
     def __len__(self):
         return self.length
     
+
+
+def __collate_fn(batch):
     
+    batch = list(zip(*batch))
+    
+    text_tensor = torch.LongTensor(batch[1])
+    label = torch.LongTensor(batch[2])
+    
+    return batch[0], text_tensor, label
+
+
+
+def return_dataloader(root, mode, transform=None, **kwarg):
+    """
+    @Param:
+        kwarg:
+            batch_size
+            num_workers
+            collate_fn
+            drop_last
+
+    """
+    batch_size = kwarg.get("batch_size", 128)
+    dataset = IMDB(root, mode, transform=transform)
+    return DataLoader(dataset, 
+                      batch_size=batch_size, 
+                      collate_fn=__collate_fn, 
+                      **kwarg)
+
 
 if __name__ == "__main__":
     # 调试一下看看对不
