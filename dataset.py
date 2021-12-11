@@ -56,7 +56,7 @@ class _IMDB(Dataset):
 
 class IMDB(Dataset):
     
-    def __init__(self, root, mode="train", p=0.002, transform=None):
+    def __init__(self, root, mode="train", p=0.2, transform=None):
         
         assert 0<p<1
         

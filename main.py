@@ -33,7 +33,7 @@ def test(epoch, ep):
     right = 0
     model.eval()
     with torch.no_grad():
-        for idx, (_, data, label) in enumerate(test_loader): 
+        for idx, (_, data, label) in enumerate(train_loader): 
             data = data.to(device)
             label = label.to(device)
             output = model(data)
@@ -49,7 +49,7 @@ def test(epoch, ep):
     model.train()
             
 
-def train(epoch=200, test_step=20, model_dir=None, save_step=100, load=True):
+def train(epoch=200, test_step=20, model_dir=None, save_step=50, load=True):
     
     if load:
         # 这样读取保存的模型
