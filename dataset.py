@@ -1,10 +1,11 @@
 import os
+import numpy as np
 from torch.utils.data import Dataset, DataLoader
 
 
-class IMDB(Dataset):
+class _IMDB(Dataset):
 
-    def __init__(self, root, mode="train"):
+    def __init__(self, root, mode="train", seed=1234):
 
         '''
         root 目录下组织格式:
@@ -16,6 +17,7 @@ class IMDB(Dataset):
                 ├─neg
                 ├─pos
                 └─unsup
+        seed : 用来 shuffle 的种子
         '''
 
         # 参数有效性检验
@@ -33,6 +35,8 @@ class IMDB(Dataset):
 
         self.data_list = [(x, 1) for x in self.pos_data_list] + \
                          [(x, 0) for x in self.neg_data_list]
+        np.random.seed(seed)
+        np.random.shuffle(self.data_list)
 
 
     def __getitem__(self, idx):
@@ -45,7 +49,51 @@ class IMDB(Dataset):
         return len(self.data_list)
 
 
+
+
+class IMDB(Dataset):
+    
+    def __init__(self, root, mode="train", p=0.2):
+        
+        assert 0<p<1
+        
+        # p : 测试集的比例
+        dataset_train = _IMDB(root, "train")
+        dataset_test = _IMDB(root, "test")
+        self.dataset = dataset_test + dataset_train
+        
+        length = len(self.dataset)
+        
+        if mode == "train":
+            self.start = 0
+            self.length = int(length*(1-p))
+        elif mode == "test":
+            self.start = int(length*(1-p))
+            self.length = length - int(length*(1-p))
+        else:
+            print("------- 你考虑清楚再和我说话 -------")
+
+    
+    def __getitem__(self, idx):
+        
+        if(len(self) <= idx):
+            raise IndexError("------- 索引越界, 检查IMDB数据类的使用情况 -------")
+        if(idx < 0):
+            idx = len(self) + idx
+            if idx < 0:
+                raise IndexError("------- 索引越界, 负数的绝对值太大" + \
+                                 "检查IMDB数据类的使用情况 -------")
+        return self.dataset[self.start + idx]
+    
+    def __len__(self):
+        return self.length
+    
+    
+
 if __name__ == "__main__":
     # 调试一下看看对不
-    dataset = IMDB(r"data/aclImdb")
-    print(dataset[-1])
+    
+    dateset_train = IMDB(r"data/aclImdb", "train")
+    dateset_test = IMDB(r"data/aclImdb", "test")
+    
+    # print(dateset.data_list[1])
