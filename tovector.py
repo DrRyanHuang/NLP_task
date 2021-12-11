@@ -18,8 +18,9 @@ class WordDict:
         
         load_old = kwarg.get("load_old", False)
         
-        if load_old:
-            self.id2word = read_pkl("model_save/wordDict_id2word.pkl")
+        model_path = "model_save/wordDict_id2word.pkl"
+        if load_old and os.path.exists(model_path):
+            self.id2word = read_pkl(model_path)
             self.word2id = {v:k for k, v in self.id2word.items()}
             
             self.length = len(self.id2word)

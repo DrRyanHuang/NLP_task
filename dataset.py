@@ -43,7 +43,7 @@ class _IMDB(Dataset):
 
     def __getitem__(self, idx):
         path, label = self.data_list[idx]
-        with open(path) as f:
+        with open(path, encoding="utf-8", ) as f:
             raw_text = f.read()
         word_list = tokenize(raw_text)
         return raw_text, word_list, label
@@ -56,7 +56,7 @@ class _IMDB(Dataset):
 
 class IMDB(Dataset):
     
-    def __init__(self, root, mode="train", p=0.2, transform=None):
+    def __init__(self, root, mode="train", p=0.002, transform=None):
         
         assert 0<p<1
         
@@ -121,9 +121,10 @@ def return_dataloader(root, mode, transform=None, **kwarg):
 
     """
     batch_size = kwarg.get("batch_size", 128)
+    kwarg['batch_size'] = batch_size
+    
     dataset = IMDB(root, mode, transform=transform)
     return DataLoader(dataset, 
-                      batch_size=batch_size, 
                       collate_fn=__collate_fn, 
                       **kwarg)
 

@@ -30,6 +30,7 @@ class LSTM(nn.Module):
         """
         
         super(LSTM, self).__init__()
+        
         self.hidden_size = hidden_size
         self.num_embeddings = num_embeddings
         self.embedding_dim = embedding_dim
@@ -51,6 +52,8 @@ class LSTM(nn.Module):
         
         self.fc = nn.Linear(in_features=((hidden_size*2) if bidirectional else hidden_size), 
                             out_features=out_dim)
+        
+        self.NAME = "LSTM"
         
     def forward(self, x):
         x = self.embedding(x)
