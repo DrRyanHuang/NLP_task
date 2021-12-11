@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from util import tokenize
+from util_dl import tokenize
 import torch
 from torch.utils.data import Dataset, DataLoader
 

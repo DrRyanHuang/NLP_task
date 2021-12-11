@@ -1,5 +1,5 @@
 import os
-from util import read_pkl, write_pkl
+from util_dl import read_pkl, write_pkl
 
 
 class WordDict:

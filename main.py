@@ -7,15 +7,15 @@ import torch.optim.lr_scheduler as lr_scheduler
 from tovector import WordDict
 from model.LSTM import LSTM
 from dataset import IMDB, return_dataloader
-from util import log_train, log_test, model_save, model_load
+from util_dl import log_train, log_test, model_save, model_load
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 word_dic = WordDict("data/aclImdb/imdb.vocab", load_old=True)
 # dateset_tr = IMDB(r"data/aclImdb", "train", transform=word_dic)
-train_loader = return_dataloader(r"data/aclImdb", "train", transform=word_dic, batch_size=256)
-test_loader = return_dataloader(r"data/aclImdb", "test", transform=word_dic, batch_size=1024)
+train_loader = return_dataloader(r"data/aclImdb", "train", transform=word_dic, batch_size=64)
+test_loader = return_dataloader(r"data/aclImdb", "test", transform=word_dic, batch_size=128)
 
 
 model = LSTM(len(word_dic), 
@@ -23,7 +23,7 @@ model = LSTM(len(word_dic),
              padding_idx=word_dic.word2id['PAD'],
              bidirectional=True).to(device)
 model.train()
-optimizer = optim.Adam(model.parameters(), lr=0.05)
+optimizer = optim.Adam(model.parameters(), lr=0.02)
 scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
 
 
@@ -33,7 +33,7 @@ def test(epoch, ep):
     right = 0
     model.eval()
     with torch.no_grad():
-        for idx, (_, data, label) in enumerate(train_loader): 
+        for idx, (_, data, label) in enumerate(test_loader): 
             data = data.to(device)
             label = label.to(device)
             output = model(data)
@@ -59,7 +59,7 @@ def train(epoch=200, test_step=20, model_dir=None, save_step=50, load=True):
     
     while(ep<epoch):
 
-        for idx, (_, data, label) in enumerate(test_loader):
+        for idx, (_, data, label) in enumerate(train_loader):
             
             data = data.to(device)
             label = label.to(device)
@@ -69,7 +69,7 @@ def train(epoch=200, test_step=20, model_dir=None, save_step=50, load=True):
             loss = F.nll_loss(output, label)
             loss.backward()
             optimizer.step()
-            scheduler.step()
+        scheduler.step()
             
         lr = scheduler.get_last_lr()[0]
         log_str = log_train(epoch, ep+1, loss.item(), lr)
