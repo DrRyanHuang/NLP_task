@@ -1,0 +1,17 @@
+fairly,2
+pretty,2
+rather,2
+quite,2
+very,2
+much,2
+too,2
+greatly,2
+almost,2
+nearly,1
+half,0.5
+highly,2
+awfully,2
+deeply,2
+partly,1.5
+perfectly,2
+really,2

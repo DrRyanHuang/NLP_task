@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<style>
+    *{margin: 0;padding: 0;}
+
+body{
+	font-family: "Microsoft Yahei",sans-serif;
+	background-image: url(/static/img/b5.jpg);
+	text-align:center;
+}
+
+header{
+	font-weight: lighter;
+	
+	color: white;
+	width: 100%;
+    height:100%;
+	text-align: center;
+	margin: 0 auto;
+    {% comment %} background-position: center center;
+    /* 背景图不平铺 */
+    background-repeat: no-repeat;
+    /* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */
+    background-attachment: fixed;  //此条属性必须设置否则可能无效/
+    /* 让背景图基于容器大小伸缩 */
+   background-size: cover;
+   /* 设置背景颜色，背景图加载过程中会显示背景色 */
+   background-color: #CCCCCC; {% endcomment %}
+
+}
+
+#title{
+	display: inline-block;
+	margin-top: 70px;
+	font-size: 64px;
+}
+
+#passages{
+	padding: 60px 25% 70px 25%;
+	font-size: 20px;
+	color: #BFBFBF;
+}
+
+#login{
+	display: inline-block;
+	width: 65%;
+	height: 150px;
+	
+}
+
+#login div:first-child{
+	padding: 60px 0 15px 0;
+	font-size: 22px;
+}
+
+#login div:nth-child(2){
+	padding-bottom: 30px;
+    color: rgb(90, 90, 90);
+
+}
+
+#login div input:first-child{
+    width: 50%;
+    height: 40px;
+    border: 1px solid #808080;
+    background:rgba(0,0,0,0);
+	
+}
+
+#login div input:first-child::placeholder{
+	color: white;
+}
+ 
+#login div input:nth-child(2) {
+	width: 10%;
+    height: 40px;
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    margin-left: 5px;
+}
+ 
+
+section{
+	width: 200%;
+	text-align: center;
+	margin: 0 auto;
+	/*border-bottom: 2px solid rgb(200, 200, 200);*/
+}
+
+table {
+	font-weight: bold;
+	font-size:20px;
+	color: white;
+	width: 40%;
+	text-align: center;
+	margin: 0 auto;
+}
+
+
+</style>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link href="/static/js/bootstrap.js" rel="javascript" >
+	{% comment %} <link href="/static/css/bootstrap.css" rel="stylesheet" > {% endcomment %}
+</head>
+<body>
+	<header>
+		<div id="title">Sentiment Analysis</div>
+		<div id="passages">
+			Sentiment analysis refers to the process of analyzing, processing and extracting emotionally colored subjective texts using natural language processing and text mining techniques.
+		</div>
+		<form method="POST" action="query/">
+			<div id="login">
+				<div>
+					<input type="text" placeholder=" The movie is good." name="user_input">
+					<input type="submit" value=" SUBMIT ">
+				</div>
+			</div>
+		</form>
+	</header>
+	{% comment %} <div id="res_table"> {% endcomment %}
+		<table class="table table-striped table-bordered table-hover" align="center">
+			<thead>
+				<tr>
+					<th>Index</th>
+					<th>Algorithm</th>
+					<th>res</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+				{%  for key,value in res.items  %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ key }}</td>
+						<td>{{ value }}</td>
+					</tr>
+				{% endfor %}
+				
+			</tbody>
+		</table>
+	{% comment %} </div> {% endcomment %}
+
+	
+	
+</body>
+</html>
